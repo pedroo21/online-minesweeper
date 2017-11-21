@@ -31,6 +31,7 @@ window.onload = function() {
 	updateScores(fscore, 0);
 	updateScores(mscore, 1);
 	updateScores(dscore, 2);
+	showGame();
 }
 
 function newGame() {
@@ -433,6 +434,7 @@ function checkLogin() {
 	loadButton(document.getElementById("Login"));
 	//makeXMLRequestAsync("register", data, CBLogin);
 	setTimeout(function() {
+		stopLoadButton(document.getElementById("Login"));
 		showGame();
 	}, 500);
 }
