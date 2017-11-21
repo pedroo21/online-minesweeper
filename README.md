@@ -20,3 +20,7 @@ Features:
 Try the demo [here](https://pedroo21.github.io/online-minesweeper)
 
 Runs best on Google Chrome!
+
+## Authors
+
+Crafted by [Iúri Pena](https://github.com/IuriTPena) & [Pedro Lourenço](https://github.com/pedroo21)
