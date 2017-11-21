@@ -1,0 +1,431 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta content='width=device-width, initial-scale=1' name='viewport' />
+  <title>Minesweeper</title>
+  <link rel="stylesheet" href="./bootstrap.css" />
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./font-awesome/css/font-awesome.min.css">
+  <script type="text/javascript" src="./jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="mine.js"></script>
+  <script type="text/javascript" src="bootstrap.min.js"></script>
+  <script type="text/javascript" src="./explosion/explosion.js"></script>
+</head>
+
+<body>
+
+  <!-- Top Menu Bar -->
+
+  <div class="navbar navbar-default navbar-fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand">Minesweeper</a>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li class="active" id="topmenu-login"><a>Login</a></li>
+          <li id="topmenu-jogar"><a>Jogar</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li id="logged-in" class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="Javascript:void(0);"><i class="fa fa-user"></i> <span id="logged-username"></span><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="Javascript:void(0);" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</a></li>
+            </ul>
+          </li>
+          <li id="not-logged"><a><i class="fa fa-sign-in"></i> Deslogado</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+
+  <!-- End of Top Menu Bar -->
+
+  <!-- Login -->
+  <div class="container" id="login-container">
+    <div class="row vertical-offset-100">
+      <div class="col-md-5 col-md-offset-4">
+        <div id="login-alerts"></div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <div class="avatar"></div>
+            <div class="row">
+              <div class="col-xs-6">
+                <a href="Javascript:void(0);" class="active" id="login-form-link" onclick="showLogin(this)">Login</a>
+              </div>
+              <div class="col-xs-6">
+                <a href="Javascript:void(0);" id="register-form-link" onclick="showRegister(this)">Register</a>
+              </div>
+            </div>
+          </div>
+          <div class="panel-body">
+            <form accept-charset="UTF-8" id="login-form">
+              <fieldset>
+                <div class="form-group">
+                  <input class="form-control form-input" id="username" placeholder="Username" name="user" type="text" value="pedro21">
+                </div>
+                <div class="form-group">
+                  <input class="form-control form-input" id="password" placeholder="Password" name="password" type="password" value="nAosei1">
+                </div>
+                <div class="checkbox">
+                  <label>
+                    <input name="remember" type="checkbox" value="Remember Me"> Lembrar-me
+                  </label>
+                </div>
+                <button class="btn btn-lg btn-info btn-block ladda-button" data-style="expand-right" id="Login" type="button" onclick="checkLogin()">Login</button>
+              </fieldset>
+            </form>
+            <form accept-charset="UTF-8" id="register-form">
+              <fieldset>
+                <div class="form-group">
+                  <input class="form-control form-input" id="username-register" placeholder="Username" name="user" type="text">
+                </div>
+                <div class="form-group">
+                  <input class="form-control form-input" id="password-register" placeholder="Password" name="password" type="password">
+                  <input class="form-control form-input" id="cpassword-register" placeholder="Confirmar Password" name="password" type="password">
+                </div>
+                <button class="btn btn-lg btn-info btn-block ladda-button" data-style="expand-right" id="Register" type="button" onclick="checkRegister()">Registar</button>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End of Log In -->
+
+  <!-- Side Bar -->
+
+  <div class="container-fluid" id="container">
+    <div class="row row-offcanvas row-offcanvas-left">
+      <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar-single" role="navigation">
+        <div class="thumbnail" style="height: 43%;">
+          <i class="fa fa-clock-o fa-2x"></i>
+          <p class="lead"><span id="minutes">00</span>:<span id="seconds">00</span></p>
+          <i class="fa fa-flag fa-2x"></i>
+          <p class="lead"><span id="flags">0</span></p>
+          <i class="fa fa-hand-pointer-o fa-2x"></i>
+          <p class="lead"><span id="clicks">0</span></p>
+        </div>
+        <div id="menu-alerts"></div>
+        <div class="list-group" id="menu">
+          <div class="list-group-item">
+            <button type="button" class="btn btn-info btn-responsive active" data-toggle="dropdown"><i class="fa fa-user"></i> Um Jogador</button>
+            <button type="button" class="btn btn-info btn-responsive" id="multiplayer" data-toggle="dropdown" onclick="changeMenu(this)"><i class="fa fa-user-plus"></i> Multi Jogador</button>
+          </div>
+          <div class="list-group-item">
+            <div class="form-group">
+              <label for="dificulty">Dificuldade</label>
+              <select class="form-control" id="dificulty">
+                <option>Fácil</option>
+                <option>Médio</option>
+                <option>Difícil</option>
+                <option>Custom</option>
+              </select>
+              <p style="margin-top: 10px" class="small">(é necessário escolher custom poder definir parâmetros abaixo)</p>
+            </div>
+          </div>
+          <div class="list-group-item">
+            <div class="form-group">
+              <label>Número de Bombas</label>
+              <input type="number" class="form-control" disabled="disabled" id="bombsAmount" min="1" max="100" placeholder="Número entre 1 e 100">
+            </div>
+          </div>
+          <div class="list-group-item">
+            <div class="form-group">
+              <label>Número de Linhas</label>
+              <input type="number" class="form-control" disabled="disabled" id="linesAmount" min="2" max="16" placeholder="Número entre 2 e 16">
+            </div>
+          </div>
+          <div class="list-group-item">
+            <div class="form-group">
+              <label>Número de Colunas</label>
+              <input type="number" class="form-control" disabled="disabled" id="columnsAmount" min="2" max="30" placeholder="Número entre 2 e 30">
+            </div>
+          </div>
+          <div class="list-group-item">
+            <label class="checkbox-inline">
+              <input type="checkbox" id="debugMode" value="option2"> Modo Debug
+            </label>
+          </div>
+          <div class="list-group-item">
+           <button type="button" id="ngsingle" class="btn btn-success btn-responsive" data-toggle="dropdown" onclick="onSubmit()"><i class="fa fa-user"></i> Novo Jogo</button>
+         </div>
+       </div>
+     </div><!-- End of Side Bar SinglePlayer -->
+
+     <div class="col-xs-6 col-sm-3 sidebar-offcanvas" id="sidebar-multi" role="navigation">
+      <div class="thumbnail" style="height: 43%;">
+        <i class="fa fa-clock-o fa-2x"></i>
+        <p class="lead"><span id="minutes-multi">00</span>:<span id="seconds-multi">00</span></p>
+        <i class="fa fa-bomb fa-2x"></i>
+        <p class="lead"><span id="bombs-total">0</span></p>
+      </div>
+      <div id="menu-alerts-multi"></div>
+      <div class="list-group" id="menu-multi">
+        <div class="list-group-item">
+          <button type="button" class="btn btn-info btn-responsive" id="singleplayer" data-toggle="dropdown" onclick="changeMenu(this)"><i class="fa fa-user"></i> Um Jogador</button>
+          <button type="button" class="btn btn-info btn-responsive active" data-toggle="dropdown"><i class="fa fa-user-plus"></i> Multi Jogador</button>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            <div id="sidebar-names">
+              <p id="title-players-sidebar" class="lead">Nenhum Adversário </p>
+                
+<!--             <canvas id="proBar"></canvas> -->
+
+              <span id="searching-players-sidebar"></span>
+              <div id="bomb-stats-sidebar">
+                <div id="playerX">
+                  <i class="fa fa-bomb fa-2x bomb-green"></i>
+                  <p class="lead"><span id="bombs-player">0</span></p>
+                </div>
+                <div id="playerY">
+                  <i class="fa fa-bomb fa-2x bomb-red"></i>
+                  <p class="lead"><span id="bombs-opponent">0</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="list-group-item">
+            <div class="form-group">
+              <label for="multidificulty">Dificuldade</label>
+              <select class="form-control" id="multidificulty">
+                <option>Fácil</option>
+                <option>Médio</option>
+                <option>Difícil</option>
+              </select>
+            </div>
+        </div>
+        <div class="list-group-item">
+          <div class="form-group">
+            <label>Pontuação</label>
+            <p id="score">(sempre atualizada)</p>
+            <ul>
+              <li id="fscore"></li>
+              <li id="mscore"></li>
+              <li id="dscore"></li>
+            </ul>
+          </div>
+        </div>
+        <div class="list-group-item">
+          <button type="button" class="btn btn-success btn-responsive" onclick="findGame()"><i class="fa fa-user-plus"></i> Procurar Jogo</button>
+          <button type="button" class="btn btn-danger btn-responsive" onclick="cancelFind()"><i class="fa fa-times"></i> Cancelar</button>
+        </div>
+      </div>
+    </div><!-- End of Side Bar Multiplayer -->
+
+    <!-- End of Side Bar -->
+
+    <!-- Empty Modal for In-Game Alerts -->
+
+    <div id="game-alerts-modal" class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title"><i class="fa fa-exclamation-circle fa-1x"></i> Ups! Algo não está certo...</h4>
+          </div>
+          <div id="game-alerts-message" class="modal-body"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- End of Empty Modal -->
+
+    <div class="col-xs-12 col-sm-9 content" id="game-container">
+      <p class="pull-left">
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="offcanvas">Visibilidade do Menu</button>
+      </p>
+
+      <div class="text-center">
+        <br><h1>Minesweeper</h1>
+        <p class="lead" id="game-sub-header">Clica numa célula para iniciar o jogo</p>
+
+        <canvas id="effects-game" width="500" height="500"></canvas>
+        <table class="table" id="game"></table>
+        <span id="searching-players"></span>
+
+        <!-- High Scores Single Player-->
+
+        <button type="button" class="btn btn-primary" id="high-scores" data-toggle="modal" data-target="#high-scores-modal">Quadro de Honra</button>
+
+        <div class="modal fade bs-example-modal-sm" id="high-scores-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Quadro de Honra</h4>
+                  <h5>Um Jogador</h5>
+              </div>
+              <div class="modal-body">
+                <ul class="nav nav-pills">
+                  <li class="active"><a data-toggle="tab" href="#home">Fácil</a></li>
+                  <li><a data-toggle="tab" href="#menu1">Médio</a></li>
+                  <li><a data-toggle="tab" href="#menu2">Difícil</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div id="home" class="tab-pane fade in active">
+                    <ul class="highscores_1">
+                      <li id="F0">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_2">
+                      <li id="F1">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_3">
+                      <li id="F2">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_default">
+                      <li id="F3">Nenhum</li>
+                      <li id="F4">Nenhum</li>
+                      <li id="F5">Nenhum</li>
+                      <li id="F6">Nenhum</li>
+                      <li id="F7">Nenhum</li>
+                      <li id="F8">Nenhum</li>
+                      <li id="F9">Nenhum</li>
+                    </ul>
+                  </div>
+                  <div id="menu1" class="tab-pane fade">
+                    <ul class="highscores_1">
+                      <li id="M0">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_2">
+                      <li id="M1">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_3">
+                      <li id="M2">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_default">
+                      <li id="M3">Nenhum</li>
+                      <li id="M4">Nenhum</li>
+                      <li id="M5">Nenhum</li>
+                      <li id="M6">Nenhum</li>
+                      <li id="M7">Nenhum</li>
+                      <li id="M8">Nenhum</li>
+                      <li id="M9">Nenhum</li>
+                    </ul>
+                  </div>
+                  <div id="menu2" class="tab-pane fade">
+                    <ul class="highscores_1">
+                      <li id="D0">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_2">
+                      <li id="D1">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_3">
+                      <li id="D2">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_default">
+                      <li id="D3">Nenhum</li>
+                      <li id="D4">Nenhum</li>
+                      <li id="D5">Nenhum</li>
+                      <li id="D6">Nenhum</li>
+                      <li id="D7">Nenhum</li>
+                      <li id="D8">Nenhum</li>
+                      <li id="D9">Nenhum</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--High Scores MultiPlayer-->
+
+        <button type="button" class="btn btn-primary" id="high-scores-multi" data-toggle="modal" data-target="#high-scores-multi-modal" onclick="getRankings()">Quadro de Honra</button>
+
+        <div class="modal fade bs-example-modal-sm" id="high-scores-multi-modal" tabindex="-1" role="dialog">
+          <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Quadro de Honra</h4>
+                  <h5>Multi Jogador</h5>
+              </div>
+              <div class="modal-body">
+                <ul class="nav nav-pills">
+                  <li class="active"><a data-toggle="tab" href="#home-multi">Fácil</a></li>
+                  <li><a data-toggle="tab" href="#menu1-multi">Médio</a></li>
+                  <li><a data-toggle="tab" href="#menu2-multi">Difícil</a></li>
+                </ul>
+                <div class="tab-content">
+                  <div id="home-multi" class="tab-pane fade in active">
+                    <ul class="highscores_1">
+                      <li id="FM0">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_2">
+                      <li id="FM1">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_3">
+                      <li id="FM2">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_default">
+                      <li id="FM3">Nenhum</li>
+                      <li id="FM4">Nenhum</li>
+                      <li id="FM5">Nenhum</li>
+                      <li id="FM6">Nenhum</li>
+                      <li id="FM7">Nenhum</li>
+                      <li id="FM8">Nenhum</li>
+                      <li id="FM9">Nenhum</li>
+                    </ul>
+                  </div>
+                  <div id="menu1-multi" class="tab-pane fade">
+                    <ul class="highscores_1">
+                      <li id="MM0">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_2">
+                      <li id="MM1">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_3">
+                      <li id="MM2">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_default">
+                      <li id="MM3">Nenhum</li>
+                      <li id="MM4">Nenhum</li>
+                      <li id="MM5">Nenhum</li>
+                      <li id="MM6">Nenhum</li>
+                      <li id="MM7">Nenhum</li>
+                      <li id="MM8">Nenhum</li>
+                      <li id="MM9">Nenhum</li>
+                    </ul>
+                  </div>
+                  <div id="menu2-multi" class="tab-pane fade">
+                    <ul class="highscores_1">
+                      <li id="DM0">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_2">
+                      <li id="DM1">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_3">
+                      <li id="DM2">Nenhum</li>
+                    </ul>
+                    <ul class="highscores_default">
+                      <li id="DM3">Nenhum</li>
+                      <li id="DM4">Nenhum</li>
+                      <li id="DM5">Nenhum</li>
+                      <li id="DM6">Nenhum</li>
+                      <li id="DM7">Nenhum</li>
+                      <li id="DM8">Nenhum</li>
+                      <li id="DM9">Nenhum</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- End of High Scores -->
+
+      </div>
+
+    </div><!--/span-->
+
+  </div><!--/row-->
+
+</div><!-- /.container -->
