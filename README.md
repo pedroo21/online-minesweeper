@@ -1,6 +1,7 @@
 # Online Minesweeper
 
-Blah... blah... [Let me just play it](https://pedroo21.github.io/online-minesweeper)
+*Blah... blah... [Let me just play it](https://pedroo21.github.io/online-minesweeper)*
+
 This repository is an implementation of a Minesweeper game made under my Web Technologies course.
 This game also integrates with a NodeJS server, providing a multiplayer functionality, although not included here.
 
